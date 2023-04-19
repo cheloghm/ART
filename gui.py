@@ -15,25 +15,16 @@ def run_app():
 
     # Set screen size based on image size
     image_width, image_height = next(iter(images.values())).get_size()
-
-    # Get the current screen resolution
-    screen_info = pygame.display.Info()
-    max_screen_width = screen_info.current_w
-    max_screen_height = screen_info.current_h
-
-    # Calculate the number of rows and columns
-    num_rows = max_screen_height // image_height
-    num_cols = max_screen_width // image_width
-
-    # Calculate the actual screen width and height based on the number of rows and columns
-    screen_width = image_width * num_cols
-    screen_height = image_height * num_rows
+    screen_width = image_width * 20
+    screen_height = image_height * 15
 
     # Create a window with the screen resolution size
-    screen = pygame.display.set_mode((screen_width, screen_height), pygame.FULLSCREEN)
+    screen = pygame.display.set_mode((screen_width, screen_height))
 
-    # Create initial grid with 10% live cells
-    grid = random_initial_grid(num_rows, num_cols, images)
+    # Create initial grid
+    num_rows = screen_height // image_height
+    num_cols = screen_width // image_width
+    grid = random_initial_grid(num_rows, num_cols, images, live_probability=0.15)
 
     # Game loop
     running = True
@@ -58,9 +49,8 @@ def run_app():
 
             if current_time - last_update_time > update_interval:
                 grid = update_grid(grid)
-                if audio_level > 0:
-                    grid = generate_new_live_cells(grid, images, live_probability=audio_level / 100)
-                    grid = randomly_kill_cells(grid, probability=(100 - audio_level) / 100)
+                grid = generate_new_live_cells(grid, images, live_cell_percentage=0.15 + audio_level / 100)
+                grid = randomly_kill_cells(grid, probability=(100 - audio_level) / 100)
                 last_update_time = current_time
 
         # Draw the grid
