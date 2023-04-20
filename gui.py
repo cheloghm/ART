@@ -43,15 +43,17 @@ def run_app():
         update_interval = audio_level_to_update_interval(audio_level)
         print(f"Update interval: {update_interval}")
 
-        # Update grid based on update interval
+       # Update grid based on update interval
         if update_interval is not None:
-            current_time = time.time()
+            ...
+            if audio_level >= 90:
+                live_cell_percentage = 1.0
+            elif audio_level > 15:
+                live_cell_percentage = round(audio_level / 100, 2)
+            else:
+                live_cell_percentage = 0.15
 
-            if current_time - last_update_time > update_interval:
-                grid = update_grid(grid)
-                grid = generate_new_live_cells(grid, images, live_cell_percentage=0.15 + audio_level / 100)
-                grid = randomly_kill_cells(grid, probability=(100 - audio_level) / 100)
-                last_update_time = current_time
+            grid = generate_new_live_cells(grid, images, live_cell_percentage=live_cell_percentage)
 
         # Draw the grid
         screen.fill((0, 0, 0))
