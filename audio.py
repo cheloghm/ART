@@ -2,6 +2,7 @@ import sounddevice as sd
 import numpy as np
 import pyaudio
 import struct
+from scipy.signal import butter, filtfilt
 
 audio_level = 0
 
@@ -24,8 +25,12 @@ def get_audio_level():
     audio_data = struct.unpack(str(2 * chunk) + 'B', data)
     audio_np_array = np.array(audio_data, dtype='b')[::2] + 128
 
-    # Calculate audio level
+    # Calculate audio level and scale it from 0 to 100
     audio_level = np.mean(np.abs(audio_np_array - 128))
+    audio_level = (audio_level / 128) * 100  # scale it to 0 - 100
+
+    # Round audio level to nearest whole number
+    audio_level = round(audio_level)
 
     # Clean up
     stream.stop_stream()
@@ -33,7 +38,7 @@ def get_audio_level():
     p.terminate()
 
     return audio_level
-    
+
 def audio_level_to_update_interval(audio_level, min_interval=0.05, max_interval=1.0, threshold=10):
     if audio_level < threshold:
         return None

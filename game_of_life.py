@@ -48,3 +48,23 @@ def randomly_kill_cells(grid, probability=0.1):
                 grid[r, c] = ''
 
     return grid
+
+def adjust_live_cells(grid, images, target_percentage):
+    num_rows, num_cols = grid.shape
+    num_live_cells = np.count_nonzero(grid)
+    current_percentage = num_live_cells / (num_rows * num_cols)
+
+    while current_percentage < target_percentage:
+        # Generate new live cells
+        grid = generate_new_live_cells(grid, images, live_cell_percentage=target_percentage)
+        num_live_cells = np.count_nonzero(grid)
+        current_percentage = num_live_cells / (num_rows * num_cols)
+
+    while current_percentage > target_percentage:
+        # Allow extra cells to die
+        grid = randomly_kill_cells(grid, live_cell_percentage=target_percentage)
+        num_live_cells = np.count_nonzero(grid)
+        current_percentage = num_live_cells / (num_rows * num_cols)
+
+    return grid
+

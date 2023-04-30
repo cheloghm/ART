@@ -18,4 +18,3 @@ def load_conway_images(size=None):  # Add the 'size' parameter with a default va
             images[file] = img_surface
 
     return images
-
