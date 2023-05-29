@@ -1,0 +1,6 @@
+numpy==1.21.2
+pygame==2.0.1
+Pillow==8.3.2
+sounddevice==0.4.1
+matplotlib==3.4.3
+opencv-python==4.5.3.56
